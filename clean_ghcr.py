@@ -81,7 +81,7 @@ def get_list_packages(owner, repo_name, owner_type, package_names):
     if repo_name:
         pkgs = [
             pkg for pkg in pkgs if pkg.get("repository")
-            and pkg["repository"]["name"].lower() == repo_name
+                                   and pkg["repository"]["name"].lower() == repo_name
         ]
     return pkgs
 
@@ -106,10 +106,17 @@ def get_all_package_versions_per_pkg(package_url):
 
 def get_deps_pkgs(owner, pkgs):
     ids = []
+    successful = True
     for pkg in pkgs:
         for pkg_ver in pkgs[pkg]:
-            image = f"{DOCKER_ENDPOINT}{owner}/{pkg}@{pkg_ver['name']}"
-            ids.extend(get_image_deps(image))
+            try:
+                image = f"{DOCKER_ENDPOINT}{owner}/{pkg}@{pkg_ver['name']}"
+                ids.extend(get_image_deps(image))
+            except Exception as e:
+                print(e)
+                successful = False
+    if not successful:
+        raise Exception("Error on image dependency resolution")
     return ids
 
 
@@ -154,7 +161,7 @@ def delete_pkgs(owner, repo_name, owner_type, package_names, untagged_only,
         packages = [
             pkg for pkg in all_packages
             if not pkg["metadata"]["container"]["tags"]
-            and pkg["name"] not in deps_pkgs
+               and pkg["name"] not in deps_pkgs
         ]
     else:
         packages = get_list_packages(
