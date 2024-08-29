@@ -81,7 +81,7 @@ def get_list_packages(owner, repo_name, owner_type, package_names):
     if repo_name:
         pkgs = [
             pkg for pkg in pkgs if pkg.get("repository")
-                                   and pkg["repository"]["name"].lower() == repo_name
+            and pkg["repository"]["name"].lower() == repo_name
         ]
     return pkgs
 
@@ -161,7 +161,7 @@ def delete_pkgs(owner, repo_name, owner_type, package_names, untagged_only,
         packages = [
             pkg for pkg in all_packages
             if not pkg["metadata"]["container"]["tags"]
-               and pkg["name"] not in deps_pkgs
+            and pkg["name"] not in deps_pkgs
         ]
     else:
         packages = get_list_packages(
